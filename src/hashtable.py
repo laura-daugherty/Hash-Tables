@@ -51,8 +51,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        # if there's nothing at the address, 
+        #     insert the key and value as the value to the address
+        # if there's something at the address
+        #     make a new LP with next pointing to what was prev at the address
+        address = self._hash_mod(key)
+        item = self.storage[address]
+        if not item:
+            item = LinkedPair(key, value)
+            self.storage[address] = item
+        else:
+            newLP = LinkedPair(key, value)
+            newLP.next = item
+            self.storage[address] = newLP
 
 
     def remove(self, key):
@@ -63,7 +74,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        address = self._hash_mod(key)
+        item = self.storage[address]
+        if not item:
+            print("WARNING")
+        else:
+            if key == item.key:
+                self.storage[address] = item.next
+            while item.next is not None:
+                item = item.next 
+                if key == item.key:
+                    self.storage[address] = item.next
+
+
 
 
     def retrieve(self, key):
@@ -74,8 +97,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        address = self._hash_mod(key)
+        item = self.storage[address]
+        if not item:
+            return None
+        else:
+            # move through LL and check for item - return item
+            while item is not None:
+                if key == item.key:
+                    return item.value
+                else:
+                    item = item.next
+            return None
 
     def resize(self):
         '''
@@ -84,9 +117,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
-
+        self.capacity = self.capacity * 2
+        tempStore = self.storage[:]
+        self.storage = [None] * self.capacity
+        for i in tempStore:
+            if i is None:
+                pass
+            else: 
+                item = i
+                while item is not None:
+                    self.insert(item.key, item.value)
+                    item = item.next
 
 if __name__ == "__main__":
     ht = HashTable(2)
